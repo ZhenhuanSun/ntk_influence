@@ -1,0 +1,16 @@
+name: nt
+channels:
+  - defaults
+dependencies:
+  - python=3.10
+  - pip
+
+  # install via conda
+  - jupyter
+  - matplotlib
+  - seaborn
+
+  # install via pip
+  - pip:
+      - "jax[cuda12]==0.4.34"
+      - neural-tangents

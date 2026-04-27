@@ -1,0 +1,17 @@
+# Ignore all PyCharm settings folders
+.idea/
+
+# Ignore files in outputs folder
+outputs/
+
+# Ignore macOS system files
+.DS_Store
+
+# Ignore some .ipynb files that I used for testing
+exp_cifar10_cnn_lin.ipynb
+exp_cifar10_cnn_inf.ipynb
+exp_mnist_fcnn.ipynb
+exp_mnist_fcnn_lin.ipynb
+exp_mnist_fcnn_inf.ipynb
+exp_mnist_linear.ipynb
+exp_mnist_linear_test.ipynb
