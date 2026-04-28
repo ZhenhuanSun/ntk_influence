@@ -1,5 +1,5 @@
 import os, sys, subprocess, argparse, json, glob
-from exp_utils import format_cmd
+from utils.exp_utils import format_cmd
 
 def main():
 
@@ -67,7 +67,7 @@ def main():
 
         for i, pct in enumerate(forget_percentages, start=1):
             cmd = [
-                sys.executable, "run_one_pct.py",
+                sys.executable, "utils/run_one_pct.py",
                 "--forget_pct", str(pct),
                 "--runs", "5",
 

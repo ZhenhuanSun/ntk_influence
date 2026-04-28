@@ -9,9 +9,9 @@ from jax.example_libraries import optimizers
 from jax.sharding import Mesh, PartitionSpec as P
 from jax.experimental.shard_map import shard_map
 
-from loss import make_rce_loss_fn, make_rls_loss_fn
-from train_utils import make_update_fn
-from metrics import make_accuracy_fn, squared_l2_norm, l2_distance, relative_l2_distance
+from utils.loss import make_rce_loss_fn, make_rls_loss_fn
+from utils.train_utils import make_update_fn
+from utils.metrics import make_accuracy_fn, squared_l2_norm, l2_distance, relative_l2_distance
 
 def gpus_warmup():
     """

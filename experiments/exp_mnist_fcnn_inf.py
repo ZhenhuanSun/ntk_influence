@@ -1,7 +1,7 @@
 import os
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 import sys, subprocess, json
-from exp_utils import format_cmd
+from utils.exp_utils import format_cmd
 
 def main():
 
@@ -19,7 +19,7 @@ def main():
     forget_pct = 50
 
     cmd = [
-        sys.executable, "run_one_pct_inf.py",
+        sys.executable, "utils/run_one_pct_inf.py",
         "--forget_pct", str(forget_pct),
 
         "--model_name", "fcnn",

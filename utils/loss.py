@@ -1,7 +1,7 @@
 import jax
 import jax.numpy as jnp
 from jax.tree_util import tree_map
-from metrics import squared_l2_norm
+from utils.metrics import squared_l2_norm
 
 
 def make_rls_loss_fn(apply_fn, lam=0.0):

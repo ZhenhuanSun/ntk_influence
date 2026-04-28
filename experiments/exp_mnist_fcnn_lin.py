@@ -1,5 +1,5 @@
 import os, sys, subprocess, argparse, json
-from exp_utils import format_cmd
+from utils.exp_utils import format_cmd
 
 def main():
 
@@ -21,7 +21,7 @@ def main():
 
     # If not overwrite results, new results will be appended to existing results
     if args.overwrite_results:
-        results_path = os.path.join(output_dir, "results_cifar10_cnn_lin.json")
+        results_path = os.path.join(output_dir, "results_mnist_fcnn_lin.json")
         try:
             os.remove(results_path)
         except FileNotFoundError:
@@ -29,8 +29,8 @@ def main():
 
     # Be sure to delete the cached model parameters and NTK matrix whenever any of the experiment settings below change.
     if args.delete_cache:
-        params_path = os.path.join(output_dir, "params_cifar10_cnn_lin.pkl")
-        ntk_path = os.path.join(output_dir, "ntk_cifar10_cnn_lin.pkl")
+        params_path = os.path.join(output_dir, "params_mnist_fcnn_lin.pkl")
+        ntk_path = os.path.join(output_dir, "ntk_mnist_fcnn_lin.pkl")
 
         for path in [params_path, ntk_path]:
             try:
@@ -42,33 +42,32 @@ def main():
     env["TF_CPP_MIN_LOG_LEVEL"] = "3"
 
     dataset_cfg = {
-        "train_per_class": "0:1000,1:1000",
-        "test_per_class": "0:1000,1:1000",
+        "train_per_class": "0:200, 1:200, 2:200, 3:200, 4:200, 5:200, 6:200, 7:200, 8:200, 9:200",
+        "test_per_class": "0:200, 1:200, 2:200, 3:200, 4:200, 5:200, 6:200, 7:200, 8:200, 9:200",
     }
 
     forget_percentages = [10, 30, 50, 70, 90]
 
     for i, pct in enumerate(forget_percentages, start=1):
         cmd = [
-            sys.executable, "run_one_pct.py",
+            sys.executable, "utils/run_one_pct.py",
             "--forget_pct", str(pct),
-            "--forget_classes", "0",
             "--runs", "5",
 
-            "--model_name", "cnn",
-            "--model_cfg", '{"channels": [128, 128, 128], "kernel_size": [3, 3]}',
+            "--model_name", "fcnn",
+            "--model_cfg", '{"hidden_widths": [1024, 1024, 1024]}',
             "--linearize",
 
-            "--dataset_name", "cifar10",
+            "--dataset_name", "mnist",
             "--dataset_cfg", json.dumps(dataset_cfg),
 
-            "--optimizer_name", "momentum",
-            "--optimizer_cfg", '{"num_epochs": 500, "learning_rate": 1e-1}',
+            "--optimizer_name", "sgd",
+            "--optimizer_cfg", '{"num_epochs": 4000, "learning_rate": 1e-1}',
 
-            "--loss", "rls",
-            "--regularization_const", "1e-1",
+            "--loss", "rce",
+            "--regularization_const", "1e-2",
 
-            "--batch_size_ntk", "250",
+            "--batch_size_ntk", "100",
             "--device_count_ntk", "2",
 
             "--output_dir", output_dir,

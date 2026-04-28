@@ -4,9 +4,9 @@ import time, json
 from jax import random
 import jax.numpy as jnp
 
-from dataset_utils import build_datasets, binary, one_hot
-from model import build_fcnn_model
-from exp_utils import run_one_lambda
+from utils.dataset_utils import build_datasets, binary, one_hot
+from utils.model import build_fcnn_model
+from utils.exp_utils import run_one_lambda
 
 def main():
 
