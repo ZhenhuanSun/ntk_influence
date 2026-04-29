@@ -20,14 +20,14 @@ python run_all_experiments.py
 Experiments corresponding to each figure can be run by
 ```bash
 # Figure 1
-python experiments/exp_mnist_fcnn_lin.py --overwrite_results -delete_cache
-python experiments/exp_cifar10_cnn_lin.py --overwrite_results -delete_cache
+python experiments/exp_mnist_fcnn_lin.py --overwrite_results --delete_cache
+python experiments/exp_cifar10_cnn_lin.py --overwrite_results --delete_cache
 
 # Figure 2
 python experiments/exp_lambda.py
 
 # Figure 3
-python experiments/exp_mnist_fcnn.py --overwrite_results -delete_cache
+python experiments/exp_mnist_fcnn.py --overwrite_results --delete_cache
 
 # Figure 4
 python experiments/exp_mnist_fcnn_inf.py
