@@ -642,7 +642,11 @@ def main():
 
     os.makedirs(args.output_dir, exist_ok=True)
 
-    if args.linearize:
+    if args.model_name == "linear":
+        ntk_cache_path = os.path.join(args.output_dir, f"ntk_{args.dataset_name}_{args.model_name}.pkl")
+        params_cache_path = os.path.join(args.output_dir, f"params_{args.dataset_name}_{args.model_name}.pkl")
+        output_path = os.path.join(args.output_dir, f"results_{args.dataset_name}_{args.model_name}.json")
+    elif args.linearize:
         ntk_cache_path = os.path.join(args.output_dir, f"ntk_{args.dataset_name}_{args.model_name}_lin.pkl")
         params_cache_path = os.path.join(args.output_dir, f"params_{args.dataset_name}_{args.model_name}_lin.pkl")
         output_path = os.path.join(args.output_dir, f"results_{args.dataset_name}_{args.model_name}_lin.json")

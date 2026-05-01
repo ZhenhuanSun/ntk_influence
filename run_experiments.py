@@ -1,7 +1,8 @@
 import os, subprocess, sys, argparse
 from pathlib import Path
 
-project_root = Path(__file__).resolve().parent # run experiments in project root directory
+# run experiments in project root directory
+project_root = Path(__file__).resolve().parent
 env = os.environ.copy()
 env["PYTHONPATH"] = str(project_root)
 
@@ -47,7 +48,9 @@ def main():
     args = parser.parse_args()
 
     if args.all:
-        selected_exps = list(EXPERIMENTS.keys())
+        # Select all experiments except the one for linear model
+        # To include the experiment on linear model, remove [1:]
+        selected_exps = list(EXPERIMENTS.keys())[1:]
     elif args.figure:
         selected_exps = FIGURES[args.figure]
     elif args.experiments:
