@@ -8,7 +8,7 @@ from jax.experimental.shard_map import shard_map
 
 import math
 import numpy as np
-from loss import make_upweight_loss_fn
+from utils.loss import make_upweight_loss_fn
 from utils.train_utils import make_kvp, make_batched_grad
 from functools import partial
 

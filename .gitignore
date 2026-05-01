@@ -4,6 +4,9 @@
 # Ignore files in outputs folder
 outputs/
 
+# Ignore figures for linear model
+plots/figure 5.ipynb
+
 # Ignore macOS system files
 .DS_Store
 
@@ -14,4 +17,3 @@ experiments/exp_mnist_fcnn.ipynb
 experiments/exp_mnist_fcnn_lin.ipynb
 experiments/exp_mnist_fcnn_inf.ipynb
 experiments/exp_mnist_linear.ipynb
-experiments/exp_mnist_linear_test.ipynb

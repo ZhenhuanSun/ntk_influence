@@ -12,24 +12,22 @@ conda activate nt
 ```
 3. Run all experiments at project root directory by
 ```bash
-python run_all_experiments.py
+python run_experiments.py --all
 ```
 4. Plot figures by running the jupyter notebooks in `./plots/`
 
 
 Experiments corresponding to each figure can be run by
 ```bash
-# Figure 1
-python experiments/exp_mnist_fcnn_lin.py --overwrite_results --delete_cache
-python experiments/exp_cifar10_cnn_lin.py --overwrite_results --delete_cache
+# run all experimetns required to plot Figure 1
+python run_experiments.py --figure fig1
+```
 
-# Figure 2
-python experiments/exp_lambda.py
+Individual experiment can be run by
+```bash
+# run experiment `mnist_fcnn_lin`
+python run_experiments.py --experiments mnist_fcnn_lin
 
-# Figure 3
-python experiments/exp_mnist_fcnn.py --overwrite_results --delete_cache
-
-# Figure 4
-python experiments/exp_mnist_fcnn_inf.py
-python experiments/exp_cifar10_cnn_inf.py
+# run experiments `mnist_fcnn_lin` and `cifar10_cnn_inf`
+python run_experiments.py --experiments mnist_fcnn_lin cifar10_cnn_inf
 ```
