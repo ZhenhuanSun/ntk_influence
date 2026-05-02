@@ -10,7 +10,9 @@ Two or more GPUs are required to run all experiments described in the paper.
 conda env create -f environment.yml
 conda activate nt
 ```
-3. Run experiments from the project root directory (Available experiment options can be found in `run_experiments.py`)
+3. Run experiments from the project root directory
+
+   (Available experiment options can be found in `run_experiments.py`)
 ```bash
 # Run all experiments
 python run_experiments.py --all
