@@ -2,7 +2,7 @@
 
 ## How to run the experiments
 
-Two or more GPUs are required to run all experiments described in the paper.
+Two or more GPUs are required to run all experiments described in the paper
 
 ### 1. Download the repository
 ### 2. Create required conda environment
