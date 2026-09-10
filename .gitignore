@@ -1,8 +1,8 @@
 # Ignore all PyCharm settings folders
 .idea/
 
-# Ignore files in outputs folder
-outputs/
+# Ignore files in outputs/figures folder
+outputs/figures
 
 # Ignore figures for linear model
 plots/figure 5.ipynb

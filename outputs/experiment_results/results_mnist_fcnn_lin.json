@@ -1,0 +1,262 @@
+[
+  {
+    "forget_pct": 10,
+    "N": 2000,
+    "Nr": 1800,
+    "Nf": 200,
+    "retrain": {
+      "test accuracy": 0.7755000591278076,
+      "forget accuracy": 0.7549999952316284
+    },
+    "theta": {
+      "total time": {
+        "first_s": 11.656511600129306,
+        "num_runs": 5,
+        "steady_mean_s": 4.167651615850628,
+        "steady_std_s": 0.07784467566254817
+      },
+      "relative l2": 6.619381747441366e-05,
+      "forget accuracy": 0.7549999952316284,
+      "test accuracy": 0.7765000462532043
+    },
+    "delta_alpha": [
+      {
+        "mode": "operator_wo_sharding",
+        "total time": {
+          "first_s": 9.228656874969602,
+          "num_runs": 5,
+          "steady_mean_s": 4.763476345874369,
+          "steady_std_s": 0.011511555578805273
+        },
+        "relative l2": 6.643569213338196e-05,
+        "forget accuracy": 0.7549999952316284,
+        "test accuracy": 0.7755000591278076
+      },
+      {
+        "mode": "operator_w_sharding",
+        "total time": {
+          "first_s": 6.936879084445536,
+          "num_runs": 5,
+          "steady_mean_s": 4.347441576421261,
+          "steady_std_s": 0.012575775899436344
+        },
+        "relative l2": 6.643336382694542e-05,
+        "forget accuracy": 0.7549999952316284,
+        "test accuracy": 0.7755000591278076
+      }
+    ],
+    "noise": {
+      "relative_l2": 0.0008189416257664561,
+      "test accuracy": 0.7800000309944153,
+      "forget accuracy": 0.8149999976158142
+    }
+  },
+  {
+    "forget_pct": 30,
+    "N": 2000,
+    "Nr": 1400,
+    "Nf": 600,
+    "retrain": {
+      "test accuracy": 0.7715000510215759,
+      "forget accuracy": 0.7450000047683716
+    },
+    "theta": {
+      "total time": {
+        "first_s": 11.53161682933569,
+        "num_runs": 5,
+        "steady_mean_s": 4.098938974924385,
+        "steady_std_s": 0.04805596697087701
+      },
+      "relative l2": 3.1186802516458556e-05,
+      "forget accuracy": 0.7433333396911621,
+      "test accuracy": 0.7705000638961792
+    },
+    "delta_alpha": [
+      {
+        "mode": "operator_wo_sharding",
+        "total time": {
+          "first_s": 8.345697774551809,
+          "num_runs": 5,
+          "steady_mean_s": 3.349482737481594,
+          "steady_std_s": 0.004810989270859103
+        },
+        "relative l2": 2.6597366741043516e-05,
+        "forget accuracy": 0.7433333396911621,
+        "test accuracy": 0.7715000510215759
+      },
+      {
+        "mode": "operator_w_sharding",
+        "total time": {
+          "first_s": 4.6460170187056065,
+          "num_runs": 5,
+          "steady_mean_s": 3.444094710610807,
+          "steady_std_s": 0.00947793425982176
+        },
+        "relative l2": 2.6601768695400096e-05,
+        "forget accuracy": 0.7433333396911621,
+        "test accuracy": 0.7715000510215759
+      }
+    ],
+    "noise": {
+      "relative_l2": 0.001618894631974399,
+      "test accuracy": 0.7795000076293945,
+      "forget accuracy": 0.8066666722297668
+    }
+  },
+  {
+    "forget_pct": 50,
+    "N": 2000,
+    "Nr": 1000,
+    "Nf": 1000,
+    "retrain": {
+      "test accuracy": 0.7640000581741333,
+      "forget accuracy": 0.7280000448226929
+    },
+    "theta": {
+      "total time": {
+        "first_s": 10.541093404404819,
+        "num_runs": 5,
+        "steady_mean_s": 3.5736406413838266,
+        "steady_std_s": 0.059713761003171
+      },
+      "relative l2": 0.00010150849266210571,
+      "forget accuracy": 0.7270000576972961,
+      "test accuracy": 0.7630000114440918
+    },
+    "delta_alpha": [
+      {
+        "mode": "operator_wo_sharding",
+        "total time": {
+          "first_s": 6.420145218260586,
+          "num_runs": 5,
+          "steady_mean_s": 2.1811119582504035,
+          "steady_std_s": 0.009431648499559438
+        },
+        "relative l2": 9.306674473918974e-05,
+        "forget accuracy": 0.7280000448226929,
+        "test accuracy": 0.7640000581741333
+      },
+      {
+        "mode": "operator_w_sharding",
+        "total time": {
+          "first_s": 3.6991461953148246,
+          "num_runs": 5,
+          "steady_mean_s": 2.6062498494982718,
+          "steady_std_s": 0.011266877896164935
+        },
+        "relative l2": 9.308427252108231e-05,
+        "forget accuracy": 0.7280000448226929,
+        "test accuracy": 0.7640000581741333
+      }
+    ],
+    "noise": {
+      "relative_l2": 0.002418798627331853,
+      "test accuracy": 0.7795000076293945,
+      "forget accuracy": 0.8070000410079956
+    }
+  },
+  {
+    "forget_pct": 70,
+    "N": 2000,
+    "Nr": 600,
+    "Nf": 1400,
+    "retrain": {
+      "test accuracy": 0.7550000548362732,
+      "forget accuracy": 0.7007142901420593
+    },
+    "theta": {
+      "total time": {
+        "first_s": 10.826485092751682,
+        "num_runs": 5,
+        "steady_mean_s": 3.555990948714316,
+        "steady_std_s": 0.05460829720841678
+      },
+      "relative l2": 0.00012411341594997793,
+      "forget accuracy": 0.6964285373687744,
+      "test accuracy": 0.7505000233650208
+    },
+    "delta_alpha": [
+      {
+        "mode": "operator_wo_sharding",
+        "total time": {
+          "first_s": 6.122343874536455,
+          "num_runs": 5,
+          "steady_mean_s": 1.4549982765689493,
+          "steady_std_s": 0.006750295099937503
+        },
+        "relative l2": 8.925092697609216e-05,
+        "forget accuracy": 0.699999988079071,
+        "test accuracy": 0.7510000467300415
+      },
+      {
+        "mode": "operator_w_sharding",
+        "total time": {
+          "first_s": 3.3571436759084463,
+          "num_runs": 5,
+          "steady_mean_s": 2.0890516532585024,
+          "steady_std_s": 0.020328317022403373
+        },
+        "relative l2": 8.923577115638182e-05,
+        "forget accuracy": 0.699999988079071,
+        "test accuracy": 0.7505000233650208
+      }
+    ],
+    "noise": {
+      "relative_l2": 0.003542846767231822,
+      "test accuracy": 0.7800000309944153,
+      "forget accuracy": 0.8071428537368774
+    }
+  },
+  {
+    "forget_pct": 90,
+    "N": 2000,
+    "Nr": 200,
+    "Nf": 1800,
+    "retrain": {
+      "test accuracy": 0.6545000076293945,
+      "forget accuracy": 0.6200000047683716
+    },
+    "theta": {
+      "total time": {
+        "first_s": 11.054975696839392,
+        "num_runs": 5,
+        "steady_mean_s": 3.8847211863845588,
+        "steady_std_s": 0.052690369571723884
+      },
+      "relative l2": 0.0005973652587272227,
+      "forget accuracy": 0.617222249507904,
+      "test accuracy": 0.655500054359436
+    },
+    "delta_alpha": [
+      {
+        "mode": "operator_wo_sharding",
+        "total time": {
+          "first_s": 5.7562967743724585,
+          "num_runs": 5,
+          "steady_mean_s": 1.1681693943217397,
+          "steady_std_s": 0.0040878999725528315
+        },
+        "relative l2": 0.0005148639902472496,
+        "forget accuracy": 0.621666669845581,
+        "test accuracy": 0.6600000262260437
+      },
+      {
+        "mode": "operator_w_sharding",
+        "total time": {
+          "first_s": 3.131512761116028,
+          "num_runs": 5,
+          "steady_mean_s": 1.8603068072348834,
+          "steady_std_s": 0.009283470806822335
+        },
+        "relative l2": 0.0005148852942511439,
+        "forget accuracy": 0.6211111545562744,
+        "test accuracy": 0.6600000262260437
+      }
+    ],
+    "noise": {
+      "relative_l2": 0.005705682095140219,
+      "test accuracy": 0.7785000205039978,
+      "forget accuracy": 0.8061111569404602
+    }
+  }
+]
