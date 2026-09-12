@@ -28,14 +28,14 @@ def main():
         "--dataset_name", "mnist",
         "--dataset_cfg", json.dumps(dataset_cfg),
 
-        "--num_epochs", "5000",
-        "--learning_rate", "1e-1",
+        "--num_epochs", "50000",
+        "--learning_rate", "1e-5",
 
         "--loss", "rce",
         "--regularization_const", "1e-1",
 
         "--batch_size_ntk", "500",
-        "--device_count_ntk", "2",
+        "--device_count_ntk", "1",
         "--store_on_device",
 
         "--output_dir", output_dir,

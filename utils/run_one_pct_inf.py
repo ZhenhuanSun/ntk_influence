@@ -6,6 +6,7 @@ import numpy as np
 import jax
 import jax.numpy as jnp
 from jax import random
+from jax.example_libraries import optimizers
 from utils.exp_utils import gpus_warmup
 
 # -----------------------------
@@ -21,10 +22,10 @@ gpus_warmup()
 import neural_tangents as nt
 from utils.dataset_utils import build_datasets, build_retain_and_forget_by_percentage, binary, one_hot
 from utils.model import build_linear_model, build_fcnn_model, build_cnn_model
-from utils.train_utils import make_kgd_update_fn
+from utils.train_utils import make_dual_update_fn
 from utils.influence import (prepare_solve_delta_alpha, influence_on_delta_alpha, influence_on_outputs_delta_alpha,
                              influence_on_loss_delta_alpha)
-from utils.loss import difference_in_loss_fnl
+from utils.loss import make_dual_rls_loss_fn, make_dual_rce_loss_fn, difference_in_loss_fnl
 
 MODEL_CONFIG_EXAMPLES = (
     "Example Usage:\n"
@@ -368,7 +369,8 @@ def main():
         )
 
         K_X_X = kernel_fn_batched(train_images, train_images, 'ntk')
-        K_X_Xr = K_X_X[:, retain_indices]
+        # K_X_Xr = K_X_X[:, retain_indices]
+        K_Xr_Xr = K_X_X[jnp.ix_(retain_indices, retain_indices)]
 
         # --------------------------------------------------------------------------------------------------------------
         # Train model on original dataset
@@ -376,38 +378,56 @@ def main():
 
         if loss == "rls":
             loss_fnl = lambda f, t: 0.5 * jnp.mean((f - t) ** 2)
+            dual_loss_fn = make_dual_rls_loss_fn(lam)
         elif loss == "rce":
             loss_fnl = lambda f, t: -jnp.mean(jnp.sum(t * jax.nn.log_softmax(f), axis=-1))
+            dual_loss_fn = make_dual_rce_loss_fn(lam)
         else:
             raise ValueError(f"Unsupported loss={loss!r}. Use 'rls' or 'rce'.")
 
-        f0_X = jnp.zeros((N, d_out)) # assume initial model outputs are all zeros
+        opt_init, opt_update, get_params = optimizers.momentum(eta, mass=0.99)
+        dual_update = make_dual_update_fn(dual_loss_fn, opt_update, get_params)
 
-        f_X = f0_X.copy()
-        kgd_update = make_kgd_update_fn(loss_fnl, lam, f0=f0_X)
+        f_prime_X = jnp.zeros_like(train_labels, dtype=K_X_X.dtype)
+        alpha_init = jnp.zeros_like(train_labels, dtype=K_X_X.dtype)
+        opt_state = opt_init(alpha_init)
 
         for epoch in range(num_epochs):
-            f_X, _, _ = kgd_update(f_X, train_labels, K_X_X, eta)
+            opt_state, _, _ = dual_update(
+                epoch,
+                opt_state,
+                f_prime_X,
+                K_X_X,
+                train_labels
+            )
 
-        alpha_star = -jax.grad(loss_fnl)(f_X, train_labels) / lam
+        alpha_star = get_params(opt_state)
+        f_X = f_prime_X + K_X_X @ alpha_star
 
         # --------------------------------------------------------------------------------------------------------------
         # Train model on retain dataset
         # --------------------------------------------------------------------------------------------------------------
 
-        fr_X = f0_X.copy()
-        kgd_update_r = make_kgd_update_fn(loss_fnl, lam, f0=f0_X, active_indices=retain_indices)
+        f_prime_Xr = f_prime_X[retain_indices]
+        alpha_r_init = jnp.zeros_like(retain_labels, dtype=K_X_X.dtype)
+        opt_state = opt_init(alpha_r_init)
 
         for epoch in range(num_epochs):
-            fr_X, _, _ = kgd_update_r(fr_X, train_labels, K_X_Xr, eta)
+            opt_state, _, _ = dual_update(
+                epoch,
+                opt_state,
+                f_prime_Xr,
+                K_Xr_Xr,
+                retain_labels
+            )
 
-        alpha_r_star = -jax.grad(loss_fnl)(fr_X[retain_indices], retain_labels) / lam
+        alpha_r_star = get_params(opt_state)
 
         # --------------------------------------------------------------------------------------------------------------
         # Influence on delta alpha
         # --------------------------------------------------------------------------------------------------------------
 
-        H_rr, rhs, delta_alpha_f = prepare_solve_delta_alpha(loss_fnl, f_X, train_labels, forget_indices, lam, K_X_X, shard_K_X_X=False)
+        H_rr, rhs, delta_alpha_f = prepare_solve_delta_alpha(loss_fnl, f_X, train_labels, forget_indices, lam, K_X_X, shard_K_X_X=True)
         delta_alpha = influence_on_delta_alpha(H_rr, rhs, delta_alpha_f, train_images, forget_indices)
 
         # --------------------------------------------------------------------------------------------------------------
@@ -417,9 +437,9 @@ def main():
         K_Xt_X = kernel_fn_batched(test_images, train_images, 'ntk')
         K_Xt_Xr = K_Xt_X[:, retain_indices]
 
-        f0_Xt = jnp.zeros((Nt, d_out))  # since we assume initial model outputs are all zeros
-        f_Xt = K_Xt_X @ alpha_star + f0_Xt
-        fr_Xt = K_Xt_Xr @ alpha_r_star + f0_Xt
+        f_prime_Xt = jnp.zeros((Nt, d_out))  # since we assume f_prime is the zero function
+        f_Xt = K_Xt_X @ alpha_star + f_prime_Xt
+        fr_Xt = K_Xt_Xr @ alpha_r_star + f_prime_Xt
 
         true_output_diffs_at_Xt = fr_Xt - f_Xt
         est_output_diffs_at_Xt = influence_on_outputs_delta_alpha(delta_alpha, K_Xt_X, shard=True)

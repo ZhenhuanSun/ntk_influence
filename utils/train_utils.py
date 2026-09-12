@@ -64,6 +64,65 @@ def make_update_fn(loss_fn, opt_update, get_params):
 
     return update
 
+def make_dual_update_fn(loss_fn, opt_update, get_params):
+    """
+    Build a JIT-compiled update function to minimize an empirical risk in the dual parameter space.
+
+    Parameters
+    ----------
+    loss_fn:
+        callable, loss_fn(alpha, f_prime_X, K_X_X, ys) -> loss.
+    opt_update:
+        callable, opt_update(step, grads, opt_state) -> opt_state, optimizer from jax.example_libraries.optimizers
+        (e.g., SGD, Momentum, Adam, etc.)
+    get_params:
+        callable, get_params(opt_state) -> params, function that extracts parameters from an optimizer state.
+
+    Returns
+    -------
+    update:
+        callable, update(step, opt_state, f_prime_X, K_X_X, ys) -> (opt_state, loss, grads).
+    """
+
+    @jit
+    def update(step, opt_state, f_prime_X, K_X_X, ys):
+        """
+        Update the dual parameters by batch gradient descent.
+
+        Parameters
+        ----------
+        step:
+            int, optimization step index.
+        opt_state:
+            optimizer state returned by opt_init or opt_update.
+        f_prime_X:
+            jax.Array of shape (|D|, d_out), values of the reference function f_prime evaluated at the training data points.
+        K_X_X:
+            jax.Array, Gram matrix evaluated on the training data points . Its shape is (|D|, |D|) for a scalar-valued kernel
+            or (|D|, |D|, d_out, d_out) for an matrix-valued kernel.
+        ys:
+            jax.Array of shape (|D|, d_out), target matrix.
+
+        Returns
+        -------
+        opt_state:
+            optimizer state returned by opt_init or opt_update.
+        loss:
+            float, dual space empirical risk evaluated at the current dual parameters.
+        grads:
+            pytree, gradients of the dual space empirical risk evaluated at the current dual parameters.
+        """
+
+        alpha = get_params(opt_state)
+
+        loss, grads = value_and_grad(loss_fn)(alpha, f_prime_X, K_X_X, ys)
+
+        opt_state = opt_update(step, grads, opt_state)
+
+        return opt_state, loss, grads
+
+    return update
+
 def make_batched_grad(loss_fn, batch_size):
     """
     Build a function that computes the gradient of loss over full dataset in batches. This is used when parallel computation

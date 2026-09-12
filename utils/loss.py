@@ -2,6 +2,7 @@ import jax
 import jax.numpy as jnp
 from jax.tree_util import tree_map
 from utils.metrics import squared_l2_norm
+from utils.train_utils import make_kvp
 
 
 def make_rls_loss_fn(apply_fn, lam=0.0):
@@ -39,7 +40,7 @@ def make_rls_loss_fn(apply_fn, lam=0.0):
         xs:
             jax.Array of shape (|D|, d_in), input feature matrix.
         ys:
-            jax.Array of shape (|D|, d_out), target matrix.
+            jax.Array of shape (|D|, 1), target matrix.
 
         Returns
         -------
@@ -55,6 +56,59 @@ def make_rls_loss_fn(apply_fn, lam=0.0):
         reg = 0.5 * lam * squared_l2_norm(delta_params)
 
         return mse + reg
+
+    return loss_fn
+
+def make_dual_rls_loss_fn(lam=0.0):
+    """
+    Build a regularized least square empirical risk in the dual parameter space.
+
+    Parameters
+    ----------
+    lam:
+        float, default=0.0, regularization constant.
+
+    Returns
+    -------
+    loss_fn:
+        callable, loss_fn(alpha, f_prime, K_X_X, ys) -> loss.
+    """
+
+    def loss_fn(alpha, f_prime_X, K_X_X, ys):
+        """
+        Dual space empirical risk with least square loss and a regularization term: alpha^T K(X, X) alpha.
+
+        Parameters
+        ----------
+        alpha:
+            jax.Array of shape (|D|, 1), dual parameters.
+
+        f_prime_X:
+            jax.Array of shape (|D|, 1), values of the reference function f_prime evaluated at the training data points.
+
+        K_X_X:
+            jax.Array, Gram matrix evaluated on the training data points . Its shape is (|D|, |D|) for a scalar-valued kernel or (|D|, |D|, d_out, d_out) for an matrix-valued kernel.
+
+        ys:
+            jax.Array of shape (|D|, 1), target matrix.
+
+        Returns
+        -------
+        loss:
+            float, empirical risk evaluated at the current parameters.
+        """
+
+        kvp = make_kvp(K_X_X.ndim)
+
+        kvp_value = kvp(alpha, K_X_X)
+        preds = f_prime_X + kvp_value
+
+        sqr_err = (preds - ys) ** 2
+        data_loss = 0.5 * jnp.mean(sqr_err)
+
+        reg = 0.5 * lam * jnp.vdot(alpha, kvp_value)
+
+        return data_loss + reg
 
     return loss_fn
 
@@ -111,6 +165,59 @@ def make_rce_loss_fn(apply_fn, lam=0.0):
         reg = 0.5 * lam * squared_l2_norm(delta_params)
 
         return ce_loss + reg
+
+    return loss_fn
+
+def make_dual_rce_loss_fn(lam=0.0):
+    """
+    Build a regularized cross entropy empirical risk in the dual parameter space.
+
+    Parameters
+    ----------
+    lam:
+        float, default=0.0, regularization constant.
+
+    Returns
+    -------
+    loss_fn:
+        callable, loss_fn(alpha, f_prime, K_X_X, ys) -> loss.
+    """
+
+    def loss_fn(alpha, f_prime_X, K_X_X, ys):
+        """
+        Dual space empirical risk with cross entropy loss and a regularization term: alpha^T K(X, X) alpha.
+
+        Parameters
+        ----------
+        alpha:
+            jax.Array of shape (|D|, d_out), dual parameters.
+
+        f_prime_X:
+            jax.Array of shape (|D|, d_out), values of the reference function f_prime evaluated at the training data points.
+
+        K_X_X:
+            jax.Array, Gram matrix evaluated on the training data points . Its shape is (|D|, |D|) for a scalar-valued kernel or (|D|, |D|, d_out, d_out) for an matrix-valued kernel.
+
+        ys:
+            jax.Array of shape (|D|, d_out), target matrix.
+
+        Returns
+        -------
+        loss:
+            float, empirical risk evaluated at the current parameters.
+        """
+
+        kvp = make_kvp(K_X_X.ndim)
+
+        kvp_value = kvp(alpha, K_X_X)
+        logits = f_prime_X + kvp_value
+
+        log_probs = jax.nn.log_softmax(logits, axis=-1)
+        data_loss = -jnp.mean(jnp.sum(ys * log_probs, axis=-1))
+
+        reg = 0.5 * lam * jnp.vdot(alpha, kvp_value)
+
+        return data_loss + reg
 
     return loss_fn
 
